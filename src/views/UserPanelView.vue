@@ -15,10 +15,12 @@
           <span class="user-name">{{ currentUser.name }}</span>
           <span class="user-role">{{ currentUser.role }}</span>
         </div>
-        <button class="colorblind-mode-btn" @click="toggleColorblindMode" :title="isColorblindMode ? 'Wyłącz tryb dla daltonisty' : 'Włącz tryb dla daltonisty'">
+        <button class="colorblind-mode-btn" @click="toggleColorblindMode"
+          :title="isColorblindMode ? 'Wyłącz tryb dla daltonisty' : 'Włącz tryb dla daltonisty'">
           {{ isColorblindMode ? '👁 Tryb normalny' : '🎨 Tryb dla daltonisty' }}
         </button>
-        <button class="dark-mode-btn" :class="{ active: isDarkMode }" @click="toggleDarkMode" :title="isDarkMode ? 'Wyłącz tryb nocny' : 'Włącz tryb nocny'">
+        <button class="dark-mode-btn" :class="{ active: isDarkMode }" @click="toggleDarkMode"
+          :title="isDarkMode ? 'Wyłącz tryb nocny' : 'Włącz tryb nocny'">
           <span class="contrast-icon">A</span>
         </button>
         <button class="logout-btn" @click="logout">
@@ -33,7 +35,8 @@
       <section class="statistics-section">
         <h3>Statystyka projektów</h3>
         <div class="stats-grid">
-          <div v-for="stat in itemStats" :key="stat.stage" class="stat-card" :style="{ backgroundImage: stat.gradient }">
+          <div v-for="stat in itemStats" :key="stat.stage" class="stat-card"
+            :style="{ backgroundImage: stat.gradient }">
             <div class="stat-number">{{ stat.count }}</div>
             <div class="stat-label">{{ stat.stage }}</div>
           </div>
@@ -43,7 +46,7 @@
       <!-- Items Requiring Action Section -->
       <section class="action-items-section">
         <h3>Projekty oczekujące na Twoją decyzję</h3>
-        
+
         <div v-if="actionItems.length === 0" class="no-items">
           Brak projektów wymagających Twojej decyzji
         </div>
@@ -97,7 +100,8 @@
             <div class="item-footer">
               <span class="added-by">Dodane przez: {{ item.addedBy }}</span>
               <span class="priority" :class="'priority-' + item.priority">
-                {{ item.priority === 'high' ? '⚠ Wysoki priorytet' : item.priority === 'medium' ? '→ Średni priorytet' : '✓ Niski priorytet' }}
+                {{ item.priority === 'high' ? '⚠ Wysoki priorytet' : item.priority === 'medium' ? '→ Średni priorytet' :
+                '✓ Niski priorytet' }}
               </span>
             </div>
           </div>
@@ -107,7 +111,7 @@
       <!-- Administrative Errands Section -->
       <section class="administrative-errands-section">
         <h3>Sprawy urzędowe</h3>
-        
+
         <div v-if="administrativeErrands.length === 0" class="no-items">
           Brak spraw urzędowych
         </div>
@@ -258,7 +262,7 @@ const itemStats = computed(() => {
     'Komisja sejmowa': { gradient: 'linear-gradient(135deg, #9C27B0, #BA68C8)', bg: '#f3e5f5', text: '#6a1b9a' },
     'Sejm - druga lektura': { gradient: 'linear-gradient(135deg, #F44336, #EF5350)', bg: '#ffebee', text: '#c62828' }
   }
-  
+
   return ['Wstępne opracowanie', 'Komisja legislacyjna', 'Sejm - pierwsza lektura', 'Komisja sejmowa', 'Sejm - druga lektura'].map(stage => {
     // In real app, count actual items in database
     const counts = {
@@ -268,7 +272,7 @@ const itemStats = computed(() => {
       'Komisja sejmowa': 2,
       'Sejm - druga lektura': 1
     }
-    
+
     return {
       stage: stage,
       count: counts[stage] || 0,
@@ -511,39 +515,39 @@ const toggleDarkMode = () => {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
 
-/* Dark Mode Button */
-.dark-mode-btn {
-  padding: 10px 20px;
-  background-color: #333333;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
+  /* Dark Mode Button */
+  .dark-mode-btn {
+    padding: 10px 20px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
 
-.dark-mode-btn:hover {
-  background-color: #555555;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(51, 51, 51, 0.3);
-}
+  .dark-mode-btn:hover {
+    background-color: #555555;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(51, 51, 51, 0.3);
+  }
 
-/* Contrast icon styling */
-.contrast-icon {
-  font-size: 18px;
-  font-weight: bold;
-  letter-spacing: 2px;
-}
+  /* Contrast icon styling */
+  .contrast-icon {
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 2px;
+  }
 
-/* When dark mode is active, highlight the icon */
-.dark-mode-btn.active .contrast-icon {
-  color: #FFFF00;
-  background: rgba(255, 255, 0, 0.2);
-  padding: 2px 6px;
-  border-radius: 3px;
-}
+  /* When dark mode is active, highlight the icon */
+  .dark-mode-btn.active .contrast-icon {
+    color: #FFFF00;
+    background: rgba(255, 255, 0, 0.2);
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
 }
 
 /* Colorblind Mode Palette */
@@ -555,14 +559,8 @@ const toggleDarkMode = () => {
   --color-info: #29335C;
 }
 
-/* Dark mode: hide gradients and use black background for all stat cards */
-:root.dark-mode .stat-card{
-  background-image: none !important;
-  background-color: #000000 !important;
-}
-
 /* Disable colorblind mode for these tiles - keep black background */
-:root.dark-mode.colorblind-mode .stat-card{
+:root.dark-mode.colorblind-mode .stat-card {
   background: #000000 !important;
   color: #FFFF00 !important;
 }
@@ -725,7 +723,7 @@ const toggleDarkMode = () => {
   }
 
   :root.dark-mode .action-btn {
-    background-color: var(--bg-secondary);
+    /* background-color: var(--bg-secondary); */
     color: var(--text-primary);
     border-color: var(--border-color);
   }
@@ -733,19 +731,19 @@ const toggleDarkMode = () => {
   :root.dark-mode .accept-btn {
     border-color: #4CAF50;
     color: #90ee90;
-    background-color: #2a4a2a;
+    /* background-color: black; */
   }
 
   :root.dark-mode .cancel-btn {
     border-color: #f44336;
     color: #ff6b6b;
-    background-color: #4a2a2a;
+    /* background-color: black; */
   }
 
   :root.dark-mode .details-btn {
     border-color: #1976d2;
     color: #64B5F6;
-    background-color: #1a3a52;
+    /* background-color: black; */
   }
 
   :root.dark-mode .item-info {
@@ -777,26 +775,28 @@ const toggleDarkMode = () => {
 
   :root.dark-mode .priority {
     color: white;
+    background-color: black;
   }
 
   :root.dark-mode .priority-high {
-    background-color: #4a2a2a;
+    background-color: black;
     color: #ff6b6b;
   }
 
   :root.dark-mode .priority-medium {
-    background-color: #4a3a2a;
+    background-color: black;
     color: #ffb347;
   }
 
   :root.dark-mode .priority-low {
-    background-color: #2a4a2a;
+    background-color: black;
     color: #90ee90;
   }
 
   :root.dark-mode .no-items {
     color: var(--text-secondary);
   }
+
   background-color: #F3E5F0;
   color: #CC78BC;
 }
@@ -1248,28 +1248,6 @@ const toggleDarkMode = () => {
   border-radius: 3px;
 }
 
-.errand-details-btn {
-  background-color: #DC143C;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.errand-details-btn:hover {
-  background-color: #b8102d;
-  box-shadow: 0 2px 8px rgba(220, 20, 60, 0.3);
-}
-
-.errand-details-btn:active {
-  transform: scale(0.98);
-}
-
 .errand-info {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -1375,6 +1353,56 @@ const toggleDarkMode = () => {
 
 :root.dark-mode .progress-bar {
   background-color: black;
+}
+
+:root.dark-mode .action-btn {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+:root.dark-mode .accept-btn {
+  /* border-color: #4CAF50;
+  color: #90ee90; */
+  background-color: black;
+}
+
+:root.dark-mode .cancel-btn {
+  /* border-color: #f44336;
+  color: #ff6b6b; */
+  background-color: black;
+}
+
+:root.dark-mode .details-btn {
+  /* border-color: #1976d2;
+  color: #64B5F6; */
+  background-color: black;
+}
+
+/* Dark mode: hide gradients and use black background for all stat cards */
+:root.dark-mode .stat-card {
+  background-image: none !important;
+  background-color: #000000 !important;
+}
+
+:root.dark-mode .priority {
+  color: #FFFF00;
+  background-color: black;
+}
+
+:root.dark-mode .priority-high {
+  background-color: black;
+}
+
+:root.dark-mode .priority-medium {
+  background-color: black;
+}
+
+:root.dark-mode .priority-low {
+  background-color: black;
+}
+
+:root.dark-mode * {
 }
 
 @media (max-width: 768px) {
