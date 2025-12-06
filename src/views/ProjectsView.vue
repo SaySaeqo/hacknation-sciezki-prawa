@@ -66,7 +66,12 @@
         Brak projektów spełniających kryteria wyszukiwania
       </div>
       <div v-else class="items-list">
-        <div v-for="item in filteredItems" :key="item.id" class="item-card">
+        <div 
+          v-for="item in filteredItems" 
+          :key="item.id" 
+          class="item-card"
+          @click="navigateToItem(item.id)"
+        >
           <div class="item-header">
             <h3 class="item-title">{{ item.title }}</h3>
             <span class="item-number">{{ item.number }}</span>
@@ -105,6 +110,10 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import ore from '@/assets/ore.webp'
+import wagon from '@/assets/wagon.webp'
+import outsideOre from '@/assets/outside_ore.webp'
+import router from '@/router'
 
 // Tabs
 const tabs = ref(['Projekty', 'Bieżące', 'Zatwierdzone'])
@@ -116,19 +125,19 @@ const imageGallery = ref([
     id: 1,
     title: 'Projekty',
     tab: 'Projekty',
-    src: 'https://via.placeholder.com/200/8B7355/FFFFFF?text=Rudy'
+    src: ore
   },
   {
     id: 2,
     title: 'Bieżące',
     tab: 'Bieżące',
-    src: 'https://via.placeholder.com/200/A0826D/FFFFFF?text=Wagon'
+    src: wagon
   },
   {
     id: 3,
     title: 'Zatwierdzone',
     tab: 'Zatwierdzone',
-    src: 'https://via.placeholder.com/200/654321/FFFFFF?text=Jaskinia'
+    src: outsideOre
   }
 ])
 
@@ -268,6 +277,12 @@ const clearAdvancedSearch = () => {
     initiative: ''
   }
 }
+
+const navigateToItem = (itemId) => {
+  // Navigate to item detail view
+  // This will work once you set up the router
+  router.push("/item/" + itemId)
+}
 </script>
 
 <style scoped>
@@ -303,14 +318,14 @@ const clearAdvancedSearch = () => {
 }
 
 .nav-btn:hover {
-  border-color: #4CAF50;
-  color: #4CAF50;
+  border-color: #DC143C;
+  color: #DC143C;
 }
 
 .nav-btn.active {
-  background-color: #4CAF50;
+  background-color: #DC143C;
   color: white;
-  border-color: #4CAF50;
+  border-color: #DC143C;
 }
 
 /* Image Gallery */
@@ -380,7 +395,7 @@ const clearAdvancedSearch = () => {
 
 .search-input:focus {
   outline: none;
-  border-color: #4CAF50;
+  border-color: #DC143C;
 }
 
 .advanced-search-btn {
@@ -397,7 +412,7 @@ const clearAdvancedSearch = () => {
 
 .advanced-search-btn:hover {
   background-color: #e8e8e8;
-  border-color: #4CAF50;
+  border-color: #DC143C;
 }
 
 /* Advanced Search */
@@ -431,7 +446,7 @@ const clearAdvancedSearch = () => {
 
 .search-field input:focus {
   outline: none;
-  border-color: #4CAF50;
+  border-color: #DC143C;
 }
 
 .clear-btn {
@@ -478,11 +493,18 @@ const clearAdvancedSearch = () => {
   padding: 20px;
   background-color: #fafafa;
   transition: all 0.3s ease;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.item-card * {
+  user-select: text;
+  pointer-events: auto;
 }
 
 .item-card:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-color: #4CAF50;
+  border-color: #DC143C;
 }
 
 .item-header {
@@ -557,7 +579,7 @@ const clearAdvancedSearch = () => {
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #4CAF50, #81C784);
+  background: linear-gradient(90deg, #DC143C, #FF6B6B);
   border-radius: 4px;
   transition: width 0.3s ease;
 }
