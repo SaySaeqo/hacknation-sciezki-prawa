@@ -373,7 +373,7 @@ const logout = () => {
   console.log('User logged out')
   alert('Wylogowano pomyślnie')
   // In real app, clear session and redirect to login
-  window.location.href = '/login'
+  router.push("/")
 }
 
 const toggleColorblindMode = () => {
@@ -1403,6 +1403,101 @@ const toggleDarkMode = () => {
 }
 
 :root.dark-mode * {
+}
+
+/* Dark mode: Increase all font sizes */
+:root.dark-mode .app-title {
+  font-size: 28px;
+}
+
+:root.dark-mode .user-name {
+  font-size: 18px;
+}
+
+:root.dark-mode .user-role {
+  font-size: 18px;
+}
+
+:root.dark-mode .connection-status {
+  font-size: 18px;
+}
+
+:root.dark-mode .statistics-section h3,
+:root.dark-mode .action-items-section h3,
+:root.dark-mode .administrative-errands-section h3 {
+  font-size: 24px;
+}
+
+:root.dark-mode .stat-number {
+  font-size: 38px;
+}
+
+:root.dark-mode .stat-label {
+  font-size: 16px;
+}
+
+:root.dark-mode .item-title {
+  font-size: 22px;
+}
+
+:root.dark-mode .item-number {
+  font-size: 16px;
+}
+
+:root.dark-mode .item-description {
+  font-size: 16px;
+}
+
+:root.dark-mode .info-label {
+  font-size: 16px;
+}
+
+:root.dark-mode .info-value {
+  font-size: 18px;
+}
+
+:root.dark-mode .action-btn {
+  font-size: 17px;
+}
+
+:root.dark-mode .tag {
+  font-size: 16px;
+}
+
+:root.dark-mode .item-footer {
+  font-size: 16px;
+}
+
+:root.dark-mode .priority {
+  font-size: 16px;
+}
+
+:root.dark-mode .no-items {
+  font-size: 18px;
+}
+
+:root.dark-mode .errand-title {
+  font-size: 20px;
+}
+
+:root.dark-mode .errand-id {
+  font-size: 16px;
+}
+
+:root.dark-mode .errand-details-btn {
+  font-size: 17px;
+}
+
+:root.dark-mode .progress-label {
+  font-size: 17px;
+}
+
+:root.dark-mode .errand-info .info-label {
+  font-size: 16px;
+}
+
+:root.dark-mode .errand-info .info-value {
+  font-size: 18px;
 }
 
 @media (max-width: 768px) {

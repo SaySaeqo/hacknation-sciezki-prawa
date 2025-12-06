@@ -2,13 +2,18 @@
   <div class="projects-container">
     <!-- Navigation Bar -->
     <nav class="navbar">
-      <button 
-        v-for="tab in tabs" 
-        :key="tab"
-        @click="activeTab = tab"
-        :class="['nav-btn', { active: activeTab === tab }]"
-      >
-        {{ tab }}
+      <div class="nav-tabs">
+        <button 
+          v-for="tab in tabs" 
+          :key="tab"
+          @click="activeTab = tab"
+          :class="['nav-btn', { active: activeTab === tab }]"
+        >
+          {{ tab }}
+        </button>
+      </div>
+      <button @click="goToLogin" class="login-btn">
+        Zaloguj się
       </button>
     </nav>
 
@@ -283,6 +288,10 @@ const navigateToItem = (itemId) => {
   // This will work once you set up the router
   router.push("/item/" + itemId)
 }
+
+const goToLogin = () => {
+  router.push("/login")
+}
 </script>
 
 <style scoped>
@@ -297,12 +306,19 @@ const navigateToItem = (itemId) => {
 /* Navigation Bar */
 .navbar {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   gap: 10px;
   margin-bottom: 30px;
   background-color: white;
   padding: 15px 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 10px;
 }
 
 .nav-btn {
@@ -326,6 +342,25 @@ const navigateToItem = (itemId) => {
   background-color: #DC143C;
   color: white;
   border-color: #DC143C;
+}
+
+.login-btn {
+  padding: 10px 24px;
+  border: 2px solid #DC143C;
+  background-color: #DC143C;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.login-btn:hover {
+  background-color: #b8102d;
+  border-color: #b8102d;
+  box-shadow: 0 2px 8px rgba(220, 20, 60, 0.3);
 }
 
 /* Image Gallery */
