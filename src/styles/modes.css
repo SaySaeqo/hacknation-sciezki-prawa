@@ -1,0 +1,139 @@
+/* Global mode styles: dark-mode and colorblind helpers
+   This file controls the page background transition and some
+   container overrides so the app visibly switches from light->dark.
+*/
+
+/* Smooth transition for background and color across the app */
+html, body {
+  transition: background-color 320ms ease, color 320ms ease;
+}
+
+/* Global font for the site */
+html, body, button, input, textarea, select, a {
+  font-family: "Times New Roman", Times, serif;
+}
+
+/* Default (light) */
+body {
+  background-color: #ffffff;
+  color: #111111;
+}
+
+/* When the app toggles dark mode we add the class to the <html> element.
+   html.dark-mode will trigger a smooth change to a dark theme. */
+html.dark-mode body {
+  background-color: #000000;
+  color: #FFFF00;
+}
+
+/* Make top-level containers adapt so the overall page feels dark.
+   These are gentle overrides and will be overridden by component-level
+   dark-mode rules if present; they ensure the base background flips. */
+html.dark-mode .panel-container,
+html.dark-mode .login-container,
+html.dark-mode .projects-container,
+html.dark-mode .detail-container {
+  background-color: transparent; /* show body background */
+}
+
+/* Strong overrides for common components. Panels keep dark background,
+   but cards/items will be white (defined below). */
+html.dark-mode .panel-content,
+html.dark-mode .top-nav,
+html.dark-mode .navbar {
+  background-color: #0a0a0a !important;
+  color: #FFFF00 !important;
+  border-color: #222 !important;
+}
+
+/* Buttons and tags adjustments - keep yellow on dark background */
+html.dark-mode .tag,
+html.dark-mode .item-number {
+  background-color: #111 !important;
+  color: #FFFF00 !important;
+}
+
+/* Headings and labels in dark mode for better visibility */
+html.dark-mode h1,
+html.dark-mode h2,
+html.dark-mode h3,
+html.dark-mode h4,
+html.dark-mode h5,
+html.dark-mode h6 {
+  color: #FFFF00 !important;
+}
+
+html.dark-mode .item-title,
+html.dark-mode .app-title,
+html.dark-mode .login-title,
+html.dark-mode .login-subtitle {
+  color: #FFFF00 !important;
+}
+
+html.dark-mode .info-label,
+html.dark-mode .stat-label,
+html.dark-mode label {
+  color: #FFD700 !important;
+}
+
+html.dark-mode .info-value,
+html.dark-mode .stat-number {
+  color: #FFFF00 !important;
+}
+
+/* Light text for descriptions and secondary info */
+html.dark-mode .item-description,
+html.dark-mode .option-description,
+html.dark-mode .promo-description {
+  color: #FFD700 !important;
+}
+
+/* Panels and cards should all be dark in dark mode */
+html.dark-mode .statistics-section,
+html.dark-mode .action-items-section,
+html.dark-mode .login-panel,
+html.dark-mode .promo-panel,
+html.dark-mode .items-section,
+html.dark-mode .action-item-card,
+html.dark-mode .item-card,
+html.dark-mode .stat-card {
+  background-color: #0a0a0a !important;
+  color: #FFFF00 !important;
+  transition: background-color 320ms ease, color 320ms ease;
+  border-color: #222 !important;
+}
+
+/* Ensure inputs and other UI elements are readable */
+html.dark-mode input,
+html.dark-mode textarea,
+html.dark-mode select {
+  background-color: #111111;
+  color: #FFFF00;
+  border-color: #333333;
+}
+
+/* A small helper for focus outlines in dark mode */
+html.dark-mode :focus {
+  outline-color: #64B5F6;
+}
+
+/* Colorblind mode should not override dark mode - dark mode takes precedence */
+html.dark-mode.colorblind-mode body {
+  background-color: #000000;
+  color: #FFFF00;
+}
+
+html.dark-mode.colorblind-mode .statistics-section,
+html.dark-mode.colorblind-mode .action-items-section,
+html.dark-mode.colorblind-mode .login-panel,
+html.dark-mode.colorblind-mode .promo-panel,
+html.dark-mode.colorblind-mode .items-section,
+html.dark-mode.colorblind-mode .action-item-card,
+html.dark-mode.colorblind-mode .item-card,
+html.dark-mode.colorblind-mode .stat-card {
+  background-color: #0a0a0a !important;
+  color: #FFFF00 !important;
+}
+
+/* Colorblind mode variable fallbacks (kept minimal here) */
+/* colorblind-mode variables are defined in component styles; no empty rule needed here. */

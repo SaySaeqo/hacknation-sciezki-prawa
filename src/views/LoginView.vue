@@ -8,14 +8,24 @@
                     <span class="logo-text">Login Page</span>
                 </div>
             </div>
-            <div class="language-selector">
-                <button class="language-btn">
-                    🌐 Język polski ▼
-                </button>
+            <div class="header-actions">
+                <div class="mode-buttons">
+                    <button class="colorblind-mode-btn" @click="toggleColorblindMode" :title="isColorblindMode ? 'Wyłącz tryb dla daltonisty' : 'Włącz tryb dla daltonisty'">
+                        {{ isColorblindMode ? '👁 Tryb normalny' : '🎨 Tryb dla daltonisty' }}
+                    </button>
+                    <button class="dark-mode-btn" :class="{ active: isDarkMode }" @click="toggleDarkMode" :title="isDarkMode ? 'Wyłącz tryb nocny' : 'Włącz tryb nocny'">
+                      <span class="contrast-icon">A</span>
+                    </button>
+                </div>
+                <div class="language-selector">
+                    <button class="language-btn">
+                        🌐 Język polski ▼
+                    </button>
+                </div>
             </div>
         </header>
 
-        <!-- Main Content -->
+                <!-- Main Content -->
         <div class="main-content">
             <!-- Left Panel - Login Options -->
             <div class="login-panel">
@@ -148,10 +158,36 @@
 
 <script setup>
 import router from '@/router';
+import { ref } from 'vue';
+
+// Colorblind mode state
+const isColorblindMode = ref(false);
+
+// Dark mode state
+const isDarkMode = ref(false);
+
 
 const selectLoginMethod = (method) => {
     console.log('Selected login method:', method)
     router.push('/user-panel');
+}
+
+const toggleColorblindMode = () => {
+    isColorblindMode.value = !isColorblindMode.value
+    if (isColorblindMode.value) {
+        document.documentElement.classList.add('colorblind-mode')
+    } else {
+        document.documentElement.classList.remove('colorblind-mode')
+    }
+}
+
+const toggleDarkMode = () => {
+    isDarkMode.value = !isDarkMode.value
+    if (isDarkMode.value) {
+        document.documentElement.classList.add('dark-mode')
+    } else {
+        document.documentElement.classList.remove('dark-mode')
+    }
 }
 </script>
 
@@ -165,16 +201,22 @@ const selectLoginMethod = (method) => {
     display: flex;
     flex-direction: column;
     background-color: #f5f5f5;
+    margin-top: 80px;
 }
 
 /* Header */
 .login-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     background-color: white;
     border-bottom: 1px solid #e0e0e0;
     padding: 15px 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    z-index: 1000;
 }
 
 .logo-section {
@@ -200,6 +242,13 @@ const selectLoginMethod = (method) => {
 
 .language-selector {
     display: flex;
+}
+
+.header-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 12px;
+    align-items: center;
 }
 
 .language-btn {
@@ -491,10 +540,195 @@ const selectLoginMethod = (method) => {
     font-size: 14px;
 }
 
-.login-footer a:hover {
-    color: #0052B4;
-    text-decoration: underline;
+/* Mode Buttons Container */
+.mode-buttons {
+    display: flex;
+    gap: 10px;
 }
+
+/* Colorblind Mode Button */
+.colorblind-mode-btn {
+    padding: 10px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.colorblind-mode-btn:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+/* Dark Mode Button */
+.dark-mode-btn {
+    padding: 10px 16px;
+    background-color: #333333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.dark-mode-btn:hover {
+    background-color: #555555;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(51, 51, 51, 0.3);
+}
+
+/* Contrast icon styling */
+.contrast-icon {
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+/* When dark mode is active, highlight the icon */
+.dark-mode-btn.active .contrast-icon {
+    color: #FFFF00;
+    background: rgba(255, 255, 0, 0.2);
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+/* Dark Mode */
+:root.dark-mode {
+    --bg-primary: #000000;
+    --bg-secondary: #0a0a0a;
+    --text-primary: #FFFF00;
+    --text-secondary: #FFD700;
+    --border-color: #222;
+}
+
+    :root.dark-mode .login-container {
+        background-color: #000000 !important;
+    }
+
+    :root.dark-mode .login-header {
+        background-color: #0a0a0a !important;
+        border-bottom-color: #222 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1000 !important;
+    }
+
+    :root.dark-mode .logo-text {
+        color: #FFFF00 !important;
+    }
+
+    :root.dark-mode .language-btn {
+        background-color: #111 !important;
+        border-color: #222 !important;
+        color: #FFFF00 !important;
+    }
+
+    :root.dark-mode .language-btn:hover {
+        background-color: #222 !important;
+    }
+
+    :root.dark-mode .login-panel {
+        background-color: #0a0a0a !important;
+        color: #FFFF00 !important;
+        border-color: #222 !important;
+    }
+
+    :root.dark-mode .login-title {
+        color: #FFFF00 !important;
+    }
+
+    :root.dark-mode .login-subtitle,
+    :root.dark-mode .remaining-methods-label {
+        color: #FFD700 !important;
+    }
+
+    :root.dark-mode .login-option {
+        background-color: #000000 !important;
+        border-color: #222 !important;
+        color: #FFFF00 !important;
+    }
+
+    :root.dark-mode .login-option:hover {
+        border-color: #FFD700 !important;
+        background-color: #111 !important;
+    }
+
+    :root.dark-mode .option-icon {
+        color: #FFFF00 !important;
+    }
+
+    :root.dark-mode .option-title {
+        color: #FFFF00 !important;
+    }
+
+    :root.dark-mode .option-description {
+        color: #FFD700 !important;
+    }
+
+    :root.dark-mode .recommended-badge {
+        background-color: #1a1a1a !important;
+        color: #FFFF00 !important;
+    }
+
+    :root.dark-mode .info-link {
+        color: #FFFF00 !important;
+    }
+
+    :root.dark-mode .promo-panel {
+        background: #0a0a0a !important;
+        color: #FFFF00 !important;
+        border-color: #222 !important;
+    }
+
+    :root.dark-mode .promo-button {
+        background-color: #000000 !important;
+        color: #FFFF00 !important;
+        border-color: #222 !important;
+    }
+
+    :root.dark-mode .promo-button:hover {
+        background-color: #111 !important;
+    }
+
+    :root.dark-mode .login-footer {
+        background-color: #0a0a0a !important;
+        border-top-color: #222 !important;
+    }
+
+    :root.dark-mode .login-footer a {
+        color: #FFFF00 !important;
+    }
+
+    :root.dark-mode .login-footer a:hover {
+        color: #64B5F6;
+    }
+
+    /* Colorblind Mode */
+    :root.colorblind-mode {
+        --color-primary: #0173B2;
+        --color-accent: #DE8F05;
+    }
+
+    :root.colorblind-mode .login-option:hover {
+        border-color: var(--color-primary);
+    }
+
+    :root.colorblind-mode .option-icon {
+        color: var(--color-primary);
+    }
+
+    :root.colorblind-mode .language-btn {
+        color: var(--color-primary);
+    }
 
 /* Responsive */
 @media (max-width: 1024px) {

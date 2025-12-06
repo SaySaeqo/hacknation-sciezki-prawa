@@ -15,6 +15,12 @@
           <span class="user-name">{{ currentUser.name }}</span>
           <span class="user-role">{{ currentUser.role }}</span>
         </div>
+        <button class="colorblind-mode-btn" @click="toggleColorblindMode" :title="isColorblindMode ? 'Wyłącz tryb dla daltonisty' : 'Włącz tryb dla daltonisty'">
+          {{ isColorblindMode ? '👁 Tryb normalny' : '🎨 Tryb dla daltonisty' }}
+        </button>
+        <button class="dark-mode-btn" :class="{ active: isDarkMode }" @click="toggleDarkMode" :title="isDarkMode ? 'Wyłącz tryb nocny' : 'Włącz tryb nocny'">
+          <span class="contrast-icon">A</span>
+        </button>
         <button class="logout-btn" @click="logout">
           Wyloguj się
         </button>
@@ -104,6 +110,12 @@
 <script setup>
 import router from '@/router'
 import { ref, computed } from 'vue'
+
+// Colorblind mode state
+const isColorblindMode = ref(false)
+
+// Dark mode state
+const isDarkMode = ref(false)
 
 // Current logged in user
 const currentUser = ref({
@@ -257,6 +269,24 @@ const logout = () => {
   // In real app, clear session and redirect to login
   window.location.href = '/login'
 }
+
+const toggleColorblindMode = () => {
+  isColorblindMode.value = !isColorblindMode.value
+  if (isColorblindMode.value) {
+    document.documentElement.classList.add('colorblind-mode')
+  } else {
+    document.documentElement.classList.remove('colorblind-mode')
+  }
+}
+
+const toggleDarkMode = () => {
+  isDarkMode.value = !isDarkMode.value
+  if (isDarkMode.value) {
+    document.documentElement.classList.add('dark-mode')
+  } else {
+    document.documentElement.classList.remove('dark-mode')
+  }
+}
 </script>
 
 <style scoped>
@@ -273,7 +303,12 @@ const logout = () => {
 
 /* Top Navigation Bar */
 .top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   background-color: white;
+  font-family: "Times New Roman", Times, serif;
   border-bottom: 2px solid #DC143C;
   padding: 15px 25px;
   display: flex;
@@ -281,6 +316,7 @@ const logout = () => {
   align-items: center;
   gap: 30px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 
 .nav-left {
@@ -290,6 +326,7 @@ const logout = () => {
 .app-title {
   margin: 0;
   font-size: 24px;
+  font-family: Times New Roman;
   font-weight: 700;
   color: #333;
 }
@@ -354,6 +391,322 @@ const logout = () => {
   box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
 }
 
+/* Colorblind Mode Button */
+.colorblind-mode-btn {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.colorblind-mode-btn:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+
+/* Dark Mode Button */
+.dark-mode-btn {
+  padding: 10px 20px;
+  background-color: #333333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.dark-mode-btn:hover {
+  background-color: #555555;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(51, 51, 51, 0.3);
+}
+
+/* Contrast icon styling */
+.contrast-icon {
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+/* When dark mode is active, highlight the icon */
+.dark-mode-btn.active .contrast-icon {
+  color: #FFFF00;
+  background: rgba(255, 255, 0, 0.2);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+}
+
+/* Colorblind Mode Palette */
+:root.colorblind-mode {
+  --color-primary: #0173B2;
+  --color-accent: #DE8F05;
+  --color-danger: #CC78BC;
+  --color-success: #CA9161;
+  --color-info: #29335C;
+}
+
+/* Dark mode: hide gradients and use black background for all stat cards */
+:root.dark-mode .stat-card:nth-child(1),
+:root.dark-mode .stat-card:nth-child(2),
+:root.dark-mode .stat-card:nth-child(3),
+:root.dark-mode .stat-card:nth-child(4),
+:root.dark-mode .stat-card:nth-child(5) {
+  background-image: none !important;
+  background-color: #000000 !important;
+}
+
+/* Disable colorblind mode for these tiles - keep black background */
+:root.dark-mode.colorblind-mode .stat-card:nth-child(1),
+:root.dark-mode.colorblind-mode .stat-card:nth-child(2),
+:root.dark-mode.colorblind-mode .stat-card:nth-child(3),
+:root.dark-mode.colorblind-mode .stat-card:nth-child(4),
+:root.dark-mode.colorblind-mode .stat-card:nth-child(5) {
+  background: #000000 !important;
+  color: #FFFF00 !important;
+}
+
+/* Colorblind mode only (without dark mode) */
+:root.colorblind-mode .stat-card:nth-child(1) {
+  background: linear-gradient(135deg, #0173B2, #56CCEF) !important;
+}
+
+:root.colorblind-mode .stat-card:nth-child(2) {
+  background: linear-gradient(135deg, #DE8F05, #F4B860) !important;
+}
+
+:root.colorblind-mode .stat-card:nth-child(3) {
+  background: linear-gradient(135deg, #CC78BC, #E8C5E0) !important;
+}
+
+:root.colorblind-mode .stat-card:nth-child(4) {
+  background: linear-gradient(135deg, #CA9161, #E5B8A2) !important;
+}
+
+:root.colorblind-mode .stat-card:nth-child(5) {
+  background: linear-gradient(135deg, #29335C, #5E548E) !important;
+}
+
+:root.colorblind-mode .accept-btn {
+  border-color: #0173B2;
+  color: #0173B2;
+  background-color: #E8F4F8;
+}
+
+:root.colorblind-mode .accept-btn:hover {
+  background-color: #CCE5F0;
+  border-color: #0173B2;
+}
+
+:root.colorblind-mode .cancel-btn {
+  border-color: #CC78BC;
+  color: #CC78BC;
+  background-color: #F3E5F0;
+}
+
+:root.colorblind-mode .cancel-btn:hover {
+  background-color: #E8D0E5;
+  border-color: #CC78BC;
+}
+
+:root.colorblind-mode .details-btn {
+  border-color: #DE8F05;
+  color: #DE8F05;
+  background-color: #FEF5E8;
+}
+
+:root.colorblind-mode .details-btn:hover {
+  background-color: #FFF0D0;
+  border-color: #DE8F05;
+}
+
+:root.colorblind-mode .priority-high {
+  background-color: #F3E5F0;
+  color: #CC78BC;
+}
+
+:root.colorblind-mode .priority-medium {
+  background-color: #FEF5E8;
+  color: #DE8F05;
+}
+
+:root.colorblind-mode .priority-low {
+  background-color: #E8F4F8;
+  color: #0173B2;
+}
+
+:root.colorblind-mode .tag {
+  background-color: #E8F4F8;
+  color: #0173B2;
+}
+
+:root.colorblind-mode .connection-status {
+
+  /* Dark Mode Palette */
+  :root.dark-mode {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --border-color: #404040;
+  }
+
+  :root.dark-mode .panel-container {
+    background-color: var(--bg-primary);
+  }
+
+  :root.dark-mode .top-nav {
+    background-color: var(--bg-secondary);
+    border-bottom-color: #8B0000;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1000 !important;
+  }
+
+  :root.dark-mode .app-title {
+    color: var(--text-primary);
+  }
+
+  :root.dark-mode .connection-status {
+    background-color: #000000 !important;
+    color: #FFFF00 !important;
+  }
+
+  :root.dark-mode.colorblind-mode .connection-status {
+    background-color: #000000 !important;
+    color: #FFFF00 !important;
+  }
+
+  :root.dark-mode .user-name {
+    color: var(--text-primary);
+  }
+
+  :root.dark-mode .user-role {
+    color: var(--text-secondary);
+  }
+
+  :root.dark-mode .statistics-section,
+  :root.dark-mode .action-items-section {
+    background-color: var(--bg-secondary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  :root.dark-mode .statistics-section h3,
+  :root.dark-mode .action-items-section h3 {
+    color: var(--text-primary);
+  }
+
+  :root.dark-mode .stat-card {
+    background-image: none !important;
+    background-color: #000000 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  :root.dark-mode .action-item-card {
+    border-color: var(--border-color);
+    background-color: var(--bg-secondary);
+  }
+
+  :root.dark-mode .action-item-card:hover {
+    border-color: #4CAF50;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  :root.dark-mode .item-title {
+    color: var(--text-primary);
+  }
+
+  :root.dark-mode .item-number {
+    background-color: #2a4a2a;
+    color: #90ee90;
+  }
+
+  :root.dark-mode .action-btn {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+  }
+
+  :root.dark-mode .accept-btn {
+    border-color: #4CAF50;
+    color: #90ee90;
+    background-color: #2a4a2a;
+  }
+
+  :root.dark-mode .cancel-btn {
+    border-color: #f44336;
+    color: #ff6b6b;
+    background-color: #4a2a2a;
+  }
+
+  :root.dark-mode .details-btn {
+    border-color: #1976d2;
+    color: #64B5F6;
+    background-color: #1a3a52;
+  }
+
+  :root.dark-mode .item-info {
+    border-top-color: var(--border-color);
+    border-bottom-color: var(--border-color);
+  }
+
+  :root.dark-mode .info-label {
+    color: var(--text-secondary);
+  }
+
+  :root.dark-mode .info-value {
+    color: var(--text-primary);
+  }
+
+  :root.dark-mode .item-description {
+    color: var(--text-secondary);
+  }
+
+  :root.dark-mode .tag {
+    background-color: #1a3a52;
+    color: #64B5F6;
+  }
+
+  :root.dark-mode .item-footer {
+    border-top-color: var(--border-color);
+    color: var(--text-secondary);
+  }
+
+  :root.dark-mode .priority {
+    color: white;
+  }
+
+  :root.dark-mode .priority-high {
+    background-color: #4a2a2a;
+    color: #ff6b6b;
+  }
+
+  :root.dark-mode .priority-medium {
+    background-color: #4a3a2a;
+    color: #ffb347;
+  }
+
+  :root.dark-mode .priority-low {
+    background-color: #2a4a2a;
+    color: #90ee90;
+  }
+
+  :root.dark-mode .no-items {
+    color: var(--text-secondary);
+  }
+  background-color: #F3E5F0;
+  color: #CC78BC;
+}
+
 /* Panel Content */
 .panel-content {
   flex: 1;
@@ -361,6 +714,7 @@ const logout = () => {
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
+  margin-top: 80px;
 }
 
 /* Statistics Section */
