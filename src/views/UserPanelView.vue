@@ -103,6 +103,57 @@
           </div>
         </div>
       </section>
+
+      <!-- Administrative Errands Section -->
+      <section class="administrative-errands-section">
+        <h3>Sprawy urzędowe</h3>
+        
+        <div v-if="administrativeErrands.length === 0" class="no-items">
+          Brak spraw urzędowych
+        </div>
+
+        <div v-else class="errands-list">
+          <div v-for="errand in administrativeErrands" :key="errand.id" class="errand-card">
+            <!-- Errand Header -->
+            <div class="errand-header">
+              <div class="errand-title-section">
+                <h4 class="errand-title">{{ errand.title }}</h4>
+                <span class="errand-id">{{ errand.number }}</span>
+              </div>
+              <button class="action-btn details-btn" @click="goToErrandDetails(errand.id)">
+                → Szczegóły
+              </button>
+            </div>
+
+            <!-- Errand Information -->
+            <div class="errand-info">
+              <div class="info-row">
+                <span class="info-label">Status:</span>
+                <span class="info-value">{{ errand.status }}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Instytucja:</span>
+                <span class="info-value">{{ errand.institution }}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Ostatnia modyfikacja:</span>
+                <span class="info-value">{{ formatDate(errand.modifiedDate) }}</span>
+              </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="errand-progress-wrapper">
+              <div class="progress-label">
+                <span>Postęp</span>
+                <span>{{ errand.progress }}%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" :style="{ width: errand.progress + '%' }"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </template>
@@ -231,6 +282,51 @@ const actionItems = computed(() => {
   return actionItemsData.value
 })
 
+// Sample administrative errands data
+const administrativeErrandsData = ref([
+  {
+    id: 101,
+    number: 'PAR-2024-001',
+    title: 'Wniosek o wydanie paszportu',
+    institution: 'Urząd Miasta Warszawa',
+    status: 'W trakcie przetwarzania',
+    modifiedDate: '2024-12-10',
+    progress: 45
+  },
+  {
+    id: 102,
+    number: 'PAR-2024-002',
+    title: 'Zmiana danych w ewidencji mieszkańców',
+    institution: 'Urząd Gminy Piaseczno',
+    status: 'Oczekuje dokumentów',
+    modifiedDate: '2024-12-05',
+    progress: 20
+  },
+  {
+    id: 103,
+    number: 'PAR-2024-003',
+    title: 'Zaświadczenie o niezaleganiu z podatkami',
+    institution: 'Urząd Skarbowy Warszawa',
+    status: 'Gotowe do odbioru',
+    modifiedDate: '2024-12-12',
+    progress: 100
+  },
+  {
+    id: 104,
+    number: 'PAR-2024-004',
+    title: 'Prawo jazdy - przedłużenie ważności',
+    institution: 'Wydział Transportu Urzędu Miasta',
+    status: 'W trakcie przetwarzania',
+    modifiedDate: '2024-12-08',
+    progress: 65
+  }
+])
+
+// Administrative errands for current user
+const administrativeErrands = computed(() => {
+  return administrativeErrandsData.value
+})
+
 // Helper functions
 const formatDate = (dateString) => {
   const options = { year: 'numeric', month: 'long', day: 'numeric' }
@@ -261,6 +357,12 @@ const goToDetails = (itemId) => {
   console.log(`Navigate to details for item ${itemId}`)
   // Navigate to detail view
   router.push(`/item/${itemId}`)
+}
+
+const goToErrandDetails = (errandId) => {
+  console.log(`Navigate to details for errand ${errandId}`)
+  // Navigate to errand detail view
+  router.push(`/errand/${errandId}`)
 }
 
 const logout = () => {
@@ -454,21 +556,13 @@ const toggleDarkMode = () => {
 }
 
 /* Dark mode: hide gradients and use black background for all stat cards */
-:root.dark-mode .stat-card:nth-child(1),
-:root.dark-mode .stat-card:nth-child(2),
-:root.dark-mode .stat-card:nth-child(3),
-:root.dark-mode .stat-card:nth-child(4),
-:root.dark-mode .stat-card:nth-child(5) {
+:root.dark-mode .stat-card{
   background-image: none !important;
   background-color: #000000 !important;
 }
 
 /* Disable colorblind mode for these tiles - keep black background */
-:root.dark-mode.colorblind-mode .stat-card:nth-child(1),
-:root.dark-mode.colorblind-mode .stat-card:nth-child(2),
-:root.dark-mode.colorblind-mode .stat-card:nth-child(3),
-:root.dark-mode.colorblind-mode .stat-card:nth-child(4),
-:root.dark-mode.colorblind-mode .stat-card:nth-child(5) {
+:root.dark-mode.colorblind-mode .stat-card{
   background: #000000 !important;
   color: #FFFF00 !important;
 }
@@ -1083,6 +1177,216 @@ const toggleDarkMode = () => {
   }
 
   .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Administrative Errands Section */
+.administrative-errands-section {
+  background-color: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.administrative-errands-section h3 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  color: #333;
+  font-weight: 600;
+}
+
+.errands-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.errand-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 15px;
+  background-color: #fafafa;
+  transition: all 0.3s ease;
+}
+
+.errand-card:hover {
+  box-shadow: 0 4px 12px rgba(220, 20, 60, 0.15);
+  border-color: #DC143C;
+  background-color: white;
+}
+
+.errand-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+  gap: 10px;
+}
+
+.errand-title-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.errand-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.errand-id {
+  font-size: 12px;
+  font-weight: 600;
+  color: #999;
+  background-color: #f0f0f0;
+  padding: 2px 8px;
+  border-radius: 3px;
+}
+
+.errand-details-btn {
+  background-color: #DC143C;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.errand-details-btn:hover {
+  background-color: #b8102d;
+  box-shadow: 0 2px 8px rgba(220, 20, 60, 0.3);
+}
+
+.errand-details-btn:active {
+  transform: scale(0.98);
+}
+
+.errand-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.errand-info .info-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.errand-info .info-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #999;
+  text-transform: uppercase;
+}
+
+.errand-info .info-value {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.errand-progress-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background-color: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #DC143C, #FF6B6B);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* Dark Mode Styles for Administrative Errands */
+:root.dark-mode .administrative-errands-section {
+  background-color: black;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+:root.dark-mode .administrative-errands-section h3 {
+  color: var(--text-primary);
+}
+
+:root.dark-mode .errand-card {
+  background-color: black;
+  border-color: #222;
+}
+
+:root.dark-mode .errand-card:hover {
+  background-color: black;
+  box-shadow: 0 4px 12px rgba(220, 20, 60, 0.25);
+}
+
+:root.dark-mode .errand-title {
+  color: var(--text-primary);
+}
+
+:root.dark-mode .errand-id {
+  background-color: black;
+  color: #999;
+}
+
+:root.dark-mode .errand-info {
+  border-bottom-color: #444;
+}
+
+:root.dark-mode .errand-info .info-label {
+  color: var(--text-secondary);
+}
+
+:root.dark-mode .errand-info .info-value {
+  color: var(--text-primary);
+}
+
+:root.dark-mode .progress-label {
+  color: var(--text-secondary);
+}
+
+:root.dark-mode .progress-bar {
+  background-color: black;
+}
+
+@media (max-width: 768px) {
+  .errand-header {
+    flex-direction: column;
+  }
+
+  .errand-details-btn {
+    width: 100%;
+  }
+
+  .errand-info {
     grid-template-columns: 1fr;
   }
 }
