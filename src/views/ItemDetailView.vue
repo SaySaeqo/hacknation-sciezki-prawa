@@ -135,7 +135,8 @@
                 <!-- PDF Placeholder (in real app, use vue-pdf-embed or similar) -->
                 <div class="pdf-placeholder">
                     <div class="pdf-preview">
-                        <img :src="selectedState?.preview || placeholderImage" :alt="selectedState?.name"
+                        <iframe v-if="isPdf(selectedState?.preview)" :src="selectedState?.preview" class="pdf-frame" title="PDF podgląd"></iframe>
+                        <img v-else :src="selectedState?.preview || placeholderImage" :alt="selectedState?.name"
                             class="pdf-image">
                     </div>
                     <p class="pdf-hint">Podgląd dokumentu: {{ selectedState?.documentName }}</p>
@@ -147,6 +148,8 @@
 
 <script setup>
 import { ref } from 'vue'
+import dokumentPdf from '@/assets/dokument.pdf'
+import dokument2Pdf from '@/assets/dokument2_stripped_colored.pdf'
 
 // Placeholder image for PDF preview
 const placeholderImage = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22500%22 viewBox=%220 0 400 500%22%3E%3Crect fill=%22%23f5f5f5%22 width=%22400%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22%23999%22%3EPodgląd dokumentu%3C/text%3E%3C/svg%3E'
@@ -179,12 +182,12 @@ const item = ref({
             documentName: 'Koncepcja_projektu_UD-2024-001.pdf',
             pdfUrl: '/documents/states/UD-2024-001-stage-1.pdf',
             docUrl: '/documents/states/UD-2024-001-stage-1.docx',
-            preview: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22500%22 viewBox=%220 0 400 500%22%3E%3Crect fill=%22%23e3f2fd%22 width=%22400%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2215%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%231976d2%22 font-weight=%22bold%22%3EWstępne opracowanie%3C/text%3E%3C/svg%3E'
+            preview: dokumentPdf
         },
         {
             id: 2,
             name: 'Komisja legislacyjna',
-            completed: true,
+            completed: false,
             enterDate: '2024-12-02',
             author: 'Prof. Maria Lewandowska',
             postedBy: 'Marek Wiśniewski',
@@ -209,7 +212,7 @@ const item = ref({
             documentName: 'Protokol_pierwsza_lektura.pdf',
             pdfUrl: '/documents/states/UD-2024-001-stage-3.pdf',
             docUrl: '/documents/states/UD-2024-001-stage-3.docx',
-            preview: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22500%22 viewBox=%220 0 400 500%22%3E%3Crect fill=%22%23e8f5e9%22 width=%22400%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2215%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%232e7d32%22 font-weight=%22bold%22%3ESejm - pierwsza lektura%3C/text%3E%3C/svg%3E'
+            preview: dokument2Pdf
         },
         {
             id: 4,
@@ -271,6 +274,11 @@ const formatDate = (dateString) => {
 
 const selectState = (state) => {
     selectedState.value = state
+}
+
+const isPdf = (src) => {
+    if (!src) return false
+    return src.toLowerCase().endsWith('.pdf')
 }
 
 const subscribeItem = () => {
@@ -636,6 +644,14 @@ const goBack = () => {
     max-height: 400px;
     border-radius: 4px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pdf-frame {
+    width: 100%;
+    height: 500px;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .pdf-hint {
