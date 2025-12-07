@@ -116,6 +116,21 @@
         <!-- PDF Viewer and State Details -->
         <div class="viewer-section">
 
+            <!-- Dropdown toolbar above PDF viewer -->
+            <div class="viewer-toolbar">
+                <div v-for="type in dropdownTypes" :key="type" class="dropdown">
+                    <button class="dropdown-btn" @click.stop="toggleDropdown(type)">
+                        {{ dropdownLabels[type] }}
+                        <span class="caret">▼</span>
+                    </button>
+                    <ul v-if="dropdownOpen[type]" class="dropdown-menu">
+                        <li v-for="option in dropdownOptions[type]" :key="option" @click.stop="selectDropdownOption(type, option)">
+                            {{ option }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
             <!-- PDF Viewer -->
             <div class="pdf-viewer-wrapper">
                 <div class="viewer-header">
@@ -135,9 +150,8 @@
                 <!-- PDF Placeholder (in real app, use vue-pdf-embed or similar) -->
                 <div class="pdf-placeholder">
                     <div class="pdf-preview">
-                        <iframe v-if="isPdf(selectedState?.preview)" :src="selectedState?.preview" class="pdf-frame" title="PDF podgląd"></iframe>
-                        <img v-else :src="selectedState?.preview || placeholderImage" :alt="selectedState?.name"
-                            class="pdf-image">
+                        <iframe v-if="isPdf(currentPreview)" :src="currentPreview" class="pdf-frame" title="PDF podgląd"></iframe>
+                        <img v-else :src="currentPreview" :alt="selectedState?.name" class="pdf-image">
                     </div>
                     <p class="pdf-hint">Podgląd dokumentu: {{ selectedState?.documentName }}</p>
                 </div>
@@ -147,9 +161,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import dokumentPdf from '@/assets/dokument.pdf'
 import dokument2Pdf from '@/assets/dokument2_stripped_colored.pdf'
+import wyjasnieniaPdf from '@/assets/wyjasnienia.pdf'
+import uwagiPdf from '@/assets/uwagi.pdf'
+import stanowiskoPdf from '@/assets/stanowisko.pdf'
+import ustaleniaPdf from '@/assets/ustalenia.pdf'
 
 // Placeholder image for PDF preview
 const placeholderImage = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22500%22 viewBox=%220 0 400 500%22%3E%3Crect fill=%22%23f5f5f5%22 width=%22400%22 height=%22500%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2224%22 fill=%22%23999%22%3EPodgląd dokumentu%3C/text%3E%3C/svg%3E'
@@ -265,6 +283,38 @@ const item = ref({
 // Selected state (default to first state)
 const selectedState = ref(item.value.states[0])
 
+// Dropdown configuration
+const dropdownTypes = ['ustawa', 'uwaga', 'odniesienie', 'ustalenie']
+
+const dropdownOptions = {
+    ustawa: ['Ustawa', 'Dodatek A', 'Dodatek B', 'Wyjaśnienie A', 'Wyjaśnienie B'],
+    uwaga: ['Uwaga ogólna', 'Uwaga legislacyjna', 'Uwaga redakcyjna', 'Uwaga techniczna'],
+    odniesienie: ['Odniesienie do art. 1', 'Odniesienie do dyrektywy UE', 'Odniesienie do orzecznictwa', 'Odniesienie do konsultacji'],
+    ustalenie: ['Ustalenie komisji', 'Ustalenie proceduralne', 'Ustalenie harmonogramu', 'Ustalenie finansowe']
+}
+
+const defaultDropdownLabels = {
+    ustawa: 'Ustawa',
+    uwaga: 'Uwaga',
+    odniesienie: 'Odniesienie',
+    ustalenie: 'Ustalenie'
+}
+
+const dropdownLabels = ref({ ...defaultDropdownLabels })
+
+const dropdownOpen = ref({
+    ustawa: false,
+    uwaga: false,
+    odniesienie: false,
+    ustalenie: false
+})
+
+// Override preview when dropdowns are used
+const overridePreview = ref(null)
+
+// Current preview source (override > selected state > placeholder)
+const currentPreview = computed(() => overridePreview.value || selectedState.value?.preview || placeholderImage)
+
 // Helper functions
 const formatDate = (dateString) => {
     if (!dateString) return 'Nieznana'
@@ -274,6 +324,15 @@ const formatDate = (dateString) => {
 
 const selectState = (state) => {
     selectedState.value = state
+    // Reset preview to state default (equivalent to selecting "Ustawa")
+    overridePreview.value = null
+    dropdownLabels.value = { ...defaultDropdownLabels }
+    dropdownOpen.value = {
+        ustawa: false,
+        uwaga: false,
+        odniesienie: false,
+        ustalenie: false
+    }
 }
 
 const isPdf = (src) => {
@@ -309,6 +368,47 @@ const downloadStateFile = (url, type) => {
     link.href = url
     link.download = `stage-document.${type === 'pdf' ? 'pdf' : 'docx'}`
     link.click()
+}
+
+const toggleDropdown = (type) => {
+    dropdownOpen.value = {
+        ...dropdownOpen.value,
+        [type]: !dropdownOpen.value[type]
+    }
+}
+
+const selectDropdownOption = (type, option) => {
+    // Reset other labels to defaults, set current to selected option
+    dropdownLabels.value = {
+        ...defaultDropdownLabels,
+        [type]: option
+    }
+
+    // Set preview based on selection
+    switch (type) {
+        case 'ustawa':
+            overridePreview.value = option === 'Ustawa' ? null : wyjasnieniaPdf
+            break
+        case 'uwaga':
+            overridePreview.value = uwagiPdf
+            break
+        case 'odniesienie':
+            overridePreview.value = stanowiskoPdf
+            break
+        case 'ustalenie':
+            overridePreview.value = ustaleniaPdf
+            break
+        default:
+            overridePreview.value = null
+    }
+
+    // Close all dropdowns
+    dropdownOpen.value = {
+        ustawa: false,
+        uwaga: false,
+        odniesienie: false,
+        ustalenie: false
+    }
 }
 
 const goBack = () => {
@@ -587,6 +687,70 @@ const goBack = () => {
     display: grid;
     grid-template-columns: 1fr;
     gap: 20px;
+}
+
+.viewer-toolbar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-btn {
+    padding: 12px 18px;
+    border: 2px solid #e0e0e0;
+    background-color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+    color: #333;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+}
+
+.dropdown-btn:hover {
+    border-color: #DC143C;
+    color: #DC143C;
+    box-shadow: 0 2px 8px rgba(220, 20, 60, 0.15);
+}
+
+.caret {
+    font-size: 12px;
+    color: inherit;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 105%;
+    left: 0;
+    min-width: 180px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 6px 0;
+    z-index: 10;
+}
+
+.dropdown-menu li {
+    list-style: none;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-menu li:hover {
+    background: #ffe8ed;
+    color: #DC143C;
 }
 
 /* PDF Viewer */
