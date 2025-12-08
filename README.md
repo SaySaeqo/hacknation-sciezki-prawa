@@ -1,6 +1,6 @@
 # hacknation-sciezki-prawa
 
-Demo page can be found at: [saysaeqo.github.io/hacknation-sciezki-prawa](saysaeqo.github.io/hacknation-sciezki-prawa)
+Demo page can be found at: [saysaeqo.github.io/hacknation-sciezki-prawa](https://saysaeqo.github.io/hacknation-sciezki-prawa)
 
 ## Recommended IDE Setup
 
